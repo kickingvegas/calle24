@@ -1,0 +1,99 @@
+* Calle 24 - Proxy Emacs image assets with SF Symbols
+
+Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of those packaged with Emacs. This primarily affects the images used by the toolbar.
+
+❗ This project is WIP.
+
+[[file:docs/images/calle24-sfsymbols.png]]
+** Caveats
+- This work is intended for use only on Emacs for macOS.
+- If you do not like the toolbar, this project is not for you.
+
+* Features
+- Basic set of Emacs image assets are proxied.
+- Limited support for OS appearance changes (dark, light mode)
+
+* Known Issues
+- Not all Emacs image assets are proxied.
+  - Low color image assets are not covered.
+  - Monochrome image assets are not covered.
+- SF Symbols images only verified on macOS. They will not render properly on other non-macOS platforms.
+    
+* How Does This Work?
+By convention, Emacs tool bar code references an image file by doing a path-list search with the /basename/ part of the image file name. The path-list is specified by the variable ~image-load-path~. The /basename/ is treated as a pseudo-logical reference key.
+
+*Calle 24* takes advantage of this by recreating the same directory of image file names packaged by Emacs but instead using SF Symbol data as the image file content. The path to this directory is then inserted at the start of the ~image-load-path~ variable. When the tool bar code looks for an image, it will pick up the directory containing SF symbols data first and render it accordingly. 
+
+* Install
+
+** Step 1: Check out the GitHub project ~calle24~
+
+Check out the ~calle24~ project into your system via ~git~. 
+
+** Step 2: Install image assets
+
+The image assets are installed via ~rsync~ to the directory ~EMACS_CONFIG_DIR/calle24/images~, where ~EMACS_CONFIG_DIR~ is the location of your Emacs configuration directory.
+
+Installation of the image assets is done via ~make~. Run the following make target from the top directory of this project.
+
+#+begin_src shell
+  $ make install EMACS_CONFIG_DIR=<your emacs config location>
+#+end_src
+
+If ~EMACS_CONFIG_DIR~ is not specified above, then it will default to ~$(HOME)/.config/emacs~.
+
+The absolute path of the installed image directory can be obtained by running ~make image-load-path~. Use this value for the next step.
+
+** Step 3: Configure ~image-load-path~
+
+Configure the Emacs variable ~image-load-path~ using ~M-x customize-variable image-load-path~.
+
+Insert a new line with choice selection "Directory" at the top of the path list. This path will be used to look up the proxy SF Symbol images.
+[[file:docs/images/calle-24-image-load-path.png]]
+Ensure that ~tool-bar-mode~ is enabled. Restart Emacs and you should see SF Symbols used in the toolbar.
+
+If you use the OS appearance feature (dark mode), then continue with the next step.
+
+** Step 4: Configure ~calle24.el~ to support OS appearance
+
+Ensure that the file ~calle24.el~ is in your Emacs ~load-path~.
+
+The following initialization code will upon Emacs startup determine the OS appearance via the Swift script ~getappearance~ and configure which set of SF Symbol images to use accordingly.
+
+#+begin_src elisp :lexical no
+  (require 'grep)
+  (when (eq window-system 'ns)
+    (require 'calle24))
+
+  (when (and (featurep 'calle24) (eq window-system 'ns))
+    (defvar cc-current-appearance (string-trim (shell-command-to-string "getappearance.swift")))
+    (setq grep-mode-tool-bar-map (calle24-grep-tool-bar-config))
+    (cond
+     ((string-equal cc-current-appearance "dark")
+      (calle24-dark-mode))
+     (t
+      (ignore)))
+
+    (add-hook 'compilation-mode-hook (lambda ()
+                                       (cond
+                                        ((string-equal cc-current-appearance "dark")
+                                         (calle24-update-tool-bar-appearance t))
+                                        (t
+                                         (ignore))))))
+#+end_src
+
+Note that the Swift script ~getappearance.swift~ must be installed in your shell's ~PATH~, have its mode be executable, and be made available to Emacs for the above code to work. It is left to more motivated readers to compile ~getappearance.swift~ as command line utility for faster performance.
+
+* Using Calle 24
+
+If the images do not match the current OS appearance, one manually invoke one of the appropriate commands:
+
+- ~calle24-light-mode~
+- ~calle24-dark-mode~
+  
+* License
+All SF Symbols images used by *Calle 24* are copyrighted by Apple, Inc.
+
+*Calle 24* is intended only for use in Emacs for macOS.
+
+All source code for *Calle 24* is GPLv3 licensed.
