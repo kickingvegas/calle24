@@ -15,8 +15,7 @@ Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of t
 
 * Known Issues
 - Not all Emacs image assets are proxied.
-  - Low color image assets are not covered.
-  - Monochrome image assets are not covered.
+  - Low color and monochrome image assets are not covered.
 - SF Symbols images only verified on macOS. They will not render properly on other non-macOS platforms.
     
 * How Does This Work?
@@ -86,7 +85,7 @@ Note that the Swift script ~getappearance.swift~ must be installed in your shell
 
 * Using Calle 24
 
-If the images do not match the current OS appearance, one manually invoke one of the appropriate commands:
+If the images do not match the current OS appearance, manually invoke one of the appropriate commands:
 
 - ~calle24-light-mode~
 - ~calle24-dark-mode~
@@ -97,3 +96,8 @@ All SF Symbols images used by *Calle 24* are copyrighted by Apple, Inc.
 *Calle 24* is intended only for use in Emacs for macOS.
 
 All source code for *Calle 24* is GPLv3 licensed.
+
+* Sponsorship
+If you enjoy using *Calle 24*, consider making a modest financial contribution to help support its development and maintenance.
+
+[[https://www.buymeacoffee.com/kickingvegas][file:docs/images/default-yellow.png]]
