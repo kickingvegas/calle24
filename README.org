@@ -2,8 +2,6 @@
 
 Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of those packaged with Emacs. This primarily affects the images used by the toolbar.
 
-❗ This project is WIP.
-
 [[file:docs/images/calle24-sfsymbols.png]]
 ** Caveats
 - This work is intended for use only on Emacs for macOS.
@@ -57,7 +55,7 @@ If you use the OS appearance feature (dark mode), then continue with the next st
 
 Ensure that the file ~calle24.el~ is in your Emacs ~load-path~.
 
-The following initialization code will upon Emacs startup determine the OS appearance via the Swift script ~getappearance~ and configure which set of SF Symbol images to use accordingly.
+The following initialization code will upon Emacs startup determine the OS appearance via the Swift script ~getappearance.swift~ and configure which set of SF Symbol images to use accordingly.
 
 #+begin_src elisp :lexical no
   (require 'grep)
@@ -81,7 +79,15 @@ The following initialization code will upon Emacs startup determine the OS appea
                                          (ignore))))))
 #+end_src
 
-Note that the Swift script ~getappearance.swift~ must be installed in your shell's ~PATH~, have its mode be executable, and be made available to Emacs for the above code to work. It is left to more motivated readers to compile ~getappearance.swift~ as command line utility for faster performance.
+Note that the Swift script ~getappearance.swift~ must be installed in your shell's ~PATH~, have its mode be executable, and be made available to Emacs for the above code to work. Use the ~make~ target ~install-getappearance~ to automate the above.
+
+#+begin_src shell
+  $ make install-getappearance BIN_DIR=<install path for script>
+#+end_src
+
+If ~BIN_DIR~ is omitted, then the default value for it is ~$(HOME)/bin~. 
+
+It is left to more motivated readers to compile ~getappearance.swift~ as a command line utility for faster performance.
 
 * Using Calle 24
 
