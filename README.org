@@ -2,12 +2,26 @@
 
 Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of those packaged with Emacs. This primarily affects the images used by the toolbar.
 
-❗ This project is WIP.
-
 [[file:docs/images/calle24-sfsymbols.png]]
 ** Caveats
 - This work is intended for use only on Emacs for macOS.
 - If you do not like the toolbar, this project is not for you.
+
+* Table of Contents                                                   :TOC_3:
+- [[#calle-24---proxy-emacs-image-assets-with-sf-symbols][Calle 24 - Proxy Emacs image assets with SF Symbols]]
+  - [[#caveats][Caveats]]
+- [[#features][Features]]
+- [[#known-issues][Known Issues]]
+- [[#how-does-this-work][How Does This Work?]]
+- [[#standard-installation-tbd][Standard Installation (TBD)]]
+- [[#manual-installation][Manual Installation]]
+  - [[#step-1-check-out-the-github-project-calle24][Step 1: Check out the GitHub project ~calle24~]]
+  - [[#step-2-install-image-assets][Step 2: Install image assets]]
+  - [[#step-3-configure-image-load-path][Step 3: Configure ~image-load-path~]]
+  - [[#step-4-configure-calle24el-to-support-os-appearance][Step 4: Configure ~calle24.el~ to support OS appearance]]
+- [[#using-calle-24][Using Calle 24]]
+- [[#license][License]]
+- [[#sponsorship][Sponsorship]]
 
 * Features
 - Basic set of Emacs image assets are proxied.
@@ -21,9 +35,22 @@ Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of t
 * How Does This Work?
 By convention, Emacs tool bar code references an image file by doing a path-list search with the /basename/ part of the image file name. The path-list is specified by the variable ~image-load-path~. The /basename/ is treated as a pseudo-logical reference key.
 
-*Calle 24* takes advantage of this by recreating the same directory of image file names packaged by Emacs but instead using SF Symbol data as the image file content. The path to this directory is then inserted at the start of the ~image-load-path~ variable. When the tool bar code looks for an image, it will pick up the directory containing SF symbols data first and render it accordingly. 
+*Calle 24* takes advantage of this by recreating the same directory of image file names packaged by Emacs but instead using SF Symbol data as the image file content. The path to this directory is then inserted at the start of the ~image-load-path~ variable. When the tool bar code looks for an image, it will pick up the directory containing SF symbols data first and render it accordingly.
 
-* Install
+* Standard Installation (TBD)
+Standard installation of ~calle24~ package is via MELPA (TBD). Upon installation or update, the following command should be run to install the images to the directory ~<user-emacs-directory>/calle24/images~, where ~user-emacs-directory~ is the location of your Emacs configuration directory. 
+
+~M-x calle24-install-images~
+
+Note that ~calle24-install-images~ shall also update the ~image-load-path~ variable accordingly.
+
+Run the following command to install a Swift script ~getappearance.swift~ to ~$(HOME)/bin~ to detect the current OS appearance.
+
+~M-x calle24-install-getappearance~
+
+Elisp configuration code to select the proper SF Symbols due to OS appearance is described in /Manual Installation: Step 4/ below.
+
+* Manual Installation
 
 ** Step 1: Check out the GitHub project ~calle24~
 
@@ -57,7 +84,7 @@ If you use the OS appearance feature (dark mode), then continue with the next st
 
 Ensure that the file ~calle24.el~ is in your Emacs ~load-path~.
 
-The following initialization code will upon Emacs startup determine the OS appearance via the Swift script ~getappearance~ and configure which set of SF Symbol images to use accordingly.
+The following initialization code will upon Emacs startup determine the OS appearance via the Swift script ~getappearance.swift~ and configure which set of SF Symbol images to use accordingly.
 
 #+begin_src elisp :lexical no
   (require 'grep)
@@ -81,7 +108,15 @@ The following initialization code will upon Emacs startup determine the OS appea
                                          (ignore))))))
 #+end_src
 
-Note that the Swift script ~getappearance.swift~ must be installed in your shell's ~PATH~, have its mode be executable, and be made available to Emacs for the above code to work. It is left to more motivated readers to compile ~getappearance.swift~ as command line utility for faster performance.
+Note that the Swift script ~getappearance.swift~ must be installed in your shell's ~PATH~, have its mode be executable, and be made available to Emacs for the above code to work. Use the ~make~ target ~install-getappearance~ to automate the above.
+
+#+begin_src shell
+  $ make install-getappearance BIN_DIR=<install path for script>
+#+end_src
+
+If ~BIN_DIR~ is omitted, then the default value for it is ~$(HOME)/bin~. 
+
+It is left to more motivated readers to compile ~getappearance.swift~ as a command line utility for faster performance.
 
 * Using Calle 24
 
