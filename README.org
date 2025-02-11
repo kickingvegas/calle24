@@ -2,6 +2,8 @@
 
 Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] images in place of those packaged with Emacs. This primarily affects the images used by the toolbar.
 
+❗This project is WIP. Subsequent releases will have breaking changes.
+
 [[file:docs/images/calle24-sfsymbols.png]]
 ** Caveats
 - This work is intended for use only on Emacs for macOS.
