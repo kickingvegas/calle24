@@ -34,7 +34,7 @@
 ;; Upon installation of the package `calle24' from MELPA, run the following
 ;; command:
 
-;; M-x `calle24-install-tool-bar-images'
+;; M-x `calle24-install'
 
 ;; You should restart Emacs after running the above command to see the tool bar
 ;; images replaced with their SF Symbols equivalent.
@@ -98,8 +98,7 @@ appearance."
 
               (if item-image
                   ;; (setf (map-elt (nthcdr 4 item) :image) (tool-bar--image-expression "cut"))
-                  (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark))
-                )))
+                  (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark)))))
           toolbar-items)))
 
 (defun calle24--tool-bar-keys (&optional tb)
@@ -269,7 +268,7 @@ default:
      ((string= appearance "light") (calle24-light-appearance))
      (t (calle24-light-appearance)))))
 
-(defun calle24-install-tool-bar-images ()
+(defun calle24-install ()
   "Install Calle 24 tool bar images.
 
 This command will install the Calle 24 tool bar images into the
@@ -283,21 +282,24 @@ Note that upon usage, it is recommended to restart Emacs to load the
 Calle 24 images."
 
   (interactive)
-  (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
-         (calle24-pkg-dir (package-desc-dir calle24-pkg))
-         (src-dir (concat calle24-pkg-dir "/images/"))
-         (dest-dir (if (string= (substring calle24-image-directory -1) "/")
-                       calle24-image-directory
-                     (concat calle24-image-directory "/")))
-         (cmdList ()))
 
-    (make-directory dest-dir t)
-    (calle24-configure-image-load-path)
-    (push "rsync" cmdList)
-    (push "-avh" cmdList)
-    (push src-dir cmdList)
-    (push dest-dir cmdList)
-    (message (shell-command-to-string (string-join (reverse cmdList) " ")))))
+  (if (y-or-n-p "This command will install Calle 24. Do you wish to proceed? ")
+      (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
+             (calle24-pkg-dir (package-desc-dir calle24-pkg))
+             (src-dir (concat calle24-pkg-dir "/images/"))
+             (dest-dir (if (string= (substring calle24-image-directory -1) "/")
+                           calle24-image-directory
+                         (concat calle24-image-directory "/")))
+             (cmdList ()))
+
+        (make-directory dest-dir t)
+        (calle24-configure-image-load-path)
+        (push "rsync" cmdList)
+        (push "-avh" cmdList)
+        (push src-dir cmdList)
+        (push dest-dir cmdList)
+        (message (shell-command-to-string (string-join (reverse cmdList) " "))))
+    (message "Ok.")))
 
 (defun calle24-configure-image-load-path ()
   "Add `calle24-image-directory' to `image-load-path' and persist.
@@ -320,14 +322,17 @@ This will delete the contents of `calle24-image-directory' and remove
 `calle24-image-directory' from `image-load-path'."
   (interactive)
 
-  (let ((calle24-directory (concat user-emacs-directory "calle24"))
-        (iload-path (seq-remove
-                     (lambda (x) (string= x calle24-image-directory))
-                     image-load-path)))
-    (delete-directory calle24-directory t t)
+  (if (y-or-n-p "This command will uninstall Calle 24 from your Emacs setup. Do you wish to proceed? ")
+      (let ((calle24-directory (concat user-emacs-directory "calle24"))
+            (iload-path (seq-remove
+                         (lambda (x) (string= x calle24-image-directory))
+                         image-load-path)))
+        (delete-directory calle24-directory t t)
 
-    (if (seq-contains-p image-load-path calle24-image-directory)
-        (customize-save-variable 'image-load-path iload-path))))
+        (if (seq-contains-p image-load-path calle24-image-directory)
+            (customize-save-variable 'image-load-path iload-path)))
+
+    (message "Ok.")))
 
 (provide 'calle24)
 ;;; calle24.el ends here
