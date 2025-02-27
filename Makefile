@@ -72,12 +72,12 @@ uninstall:
 
 
 ## Bump Patch Version
-.PHONY: bump-casual
-bump-casual:
+.PHONY: bump-calle24
+bump-calle24:
 	sed -i 's/;; Version: $(VERSION)/;; Version: $(VERSION_BUMP)/' $(MAIN_EL)
 
 .PHONY: bump
-bump: bump-casual
+bump: bump-calle24
 	git commit -m 'Bump version to $(VERSION_BUMP)' $(MAIN_EL)
 	git push
 

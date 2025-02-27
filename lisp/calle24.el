@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 0.1.1
+;; Version: 0.1.2-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,10 +25,36 @@
 
 ;; Calle 24 provides toolbar support for SF symbols. It achieves this by
 ;; substituting Emacs image assets with SF Symbols by proxy.
-;; This package is only intended to be used by Emacs running on macOS.
+
+;; This package is only intended to be used by Emacs (NS variant) running on
+;; macOS.
 
 ;; INSTALLATION
-;; TBD
+
+;; Upon installation of the package `calle24' from MELPA, run the following
+;; command:
+
+;; M-x `calle24-install'
+
+;; You should restart Emacs after running the above command to see the tool bar
+;; images replaced with their SF Symbols equivalent.
+
+;; CONFIGURATION
+
+;; Add the following code to your Emacs initialization to load
+;; appearance-specific images.
+
+;; (when (eq window-system 'ns)
+;;   (calle24-refresh-appearance)
+;;   (add-hook 'compilation-mode-hook #'calle24-refresh-appearance))
+
+;; UNINSTALL
+
+;; In the event that you do not wish to use Calle 24, perform the following
+;; steps before deleting the calle24 package.
+
+;; 1. Remove the directory `calle24-image-directory' in `user-emacs-directory'.
+;; 2. Remove the `calle24-image-directory' from `image-load-path'.
 
 ;;; Code:
 (require 'tool-bar)
@@ -36,16 +62,27 @@
 (require 'info)
 (require 'help-mode)
 (require 'map)
+(require 'seq)
+(require 'package)
+(require 'compile)
+
+(defvar user-emacs-directory) ; declared only to pass package lint
 
 (defcustom calle24-image-directory (concat user-emacs-directory "calle24/images")
-  "Image directory location for calle24."
+  "Image directory location for installed Calle 24 images.
+
+This variable is added to `image-load-path' which is the path list used
+by Emacs to find tool bar image files.
+
+By default, this value is set to the directory ‘calle24/images’ in
+`user-emacs-directory'."
   :type 'directory
   :group 'image)
 
 (defun calle24-update-tool-bar-appearance (&optional dark tb)
-  "If DARK is non-nil, configure toolbar map TB images for that appearance.
+  "If DARK is non-nil, configure the images in toolbar map TB accordingly.
 
-This function walks through the toolbar items and replaces each
+This function walks through the toolbar items in TB and replaces each
 item's :image slot with the image expression appropriate to the
 appearance."
   (let* ((tb (if tb tb tool-bar-map))
@@ -61,18 +98,17 @@ appearance."
 
               (if item-image
                   ;; (setf (map-elt (nthcdr 4 item) :image) (tool-bar--image-expression "cut"))
-                  (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark))
-                )))
+                  (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark)))))
           toolbar-items)))
 
-(defun calle24-tool-bar-keys (&optional tb)
+(defun calle24--tool-bar-keys (&optional tb)
   "List keys in toolbar map TB."
   (let* ((tb (if tb tb tool-bar-map))
          (toolbar-items (cdr tb))
          (toolbar-keys (mapcar #'car toolbar-items)))
     toolbar-keys))
 
-(defvar calle24-image-appearance-map
+(defvar calle24--image-appearance-map
   '((Add\ bookmark . "bookmark_add")
     (Back\ in\ History . "left-arrow")
     (Back\ to\ previous\ page . "left-arrow")
@@ -115,7 +151,15 @@ appearance."
     (recompile . "refresh")
     (save-buffer . "save")
     (search . "search")
-    (undo . "undo"))
+    (undo . "undo")
+    (\ Apply\  . "index")
+    (\ Apply\ and\ Save\  . "save")
+    (\ Undo\ Edits\  . "refresh")
+    (\ Reset\ Customizations\  . "undo")
+    (\ Erase\ Customizations\  . "delete")
+    (\ Toggle\ hiding\ all\ values\  . "hide")
+    (\ Help\ for\ Customize\  . "help")
+    (\ Exit\  . "exit"))
   "Alist map of keys used by certain toolbar maps built-in with Emacs.
 
 The following toolbars are supported:
@@ -138,12 +182,12 @@ an OS-level dark appearance, otherwise a light appearance is
 presumed.
 
 If APPEARANCE-MAP is not specified, then
-`calle24-image-appearance-map' is used for the KEY lookup. The
+`calle24--image-appearance-map' is used for the KEY lookup. The
 matching value is the basename of the image filename that is used
 to build the image expression."
   (let* ((appearance-map (if appearance-map
                              appearance-map
-                           calle24-image-appearance-map))
+                           calle24--image-appearance-map))
          (value (map-elt appearance-map key)))
     (if value
         (if dark
@@ -151,8 +195,8 @@ to build the image expression."
           (tool-bar--image-expression value))
       value)))
 
-
-(defun calle24-dark-mode ()
+;;;###autoload (autoload 'calle24-dark-appearance "calle24" nil t)
+(defun calle24-dark-appearance ()
   "Configure tool bar images for OS dark mode appearance."
   (interactive)
   ;;(tool-bar-setup)
@@ -164,7 +208,8 @@ to build the image expression."
 
   (tool-bar--flush-cache))
 
-(defun calle24-light-mode ()
+;;;###autoload (autoload 'calle24-light-appearance "calle24" nil t)
+(defun calle24-light-appearance ()
   "Configure tool bar images for OS light mode appearance."
   (interactive)
   ;;(tool-bar-setup)
@@ -176,9 +221,8 @@ to build the image expression."
 
   (tool-bar--flush-cache))
 
-
 (defun calle24-grep-tool-bar-config ()
-  "Configure an opinionated tool bar for grep/compilation mode."
+  "Configure Calle 24 opinionated tool bar for grep/compilation mode."
   (let ((map (make-sparse-keymap)))
     (tool-bar-local-item
      "left-arrow" #'previous-error-no-select #'previous-error-no-select map
@@ -197,6 +241,98 @@ to build the image expression."
      "refresh" #'recompile #'recompile map
      :help "Restart grep")
     map))
+
+(defun calle24-get-macos-appearance ()
+  "Get current macOS appearance.
+This function is intended to run only on macOS systems with swift
+installed."
+  (let ((results (process-lines "swift" "-e" "
+import AppKit
+
+switch NSApplication.shared.effectiveAppearance.name {
+case .darkAqua:
+    print(\"dark\")
+
+default:
+    print(\"light\")
+}")))
+    (car results)))
+
+;;;###autoload (autoload 'calle24-refresh-appearance "calle24" nil t)
+(defun calle24-refresh-appearance ()
+  "Refresh OS appearance-dependent images from Calle 24."
+  (interactive)
+  (let ((appearance (calle24-get-macos-appearance)))
+    (cond
+     ((string= appearance "dark") (calle24-dark-appearance))
+     ((string= appearance "light") (calle24-light-appearance))
+     (t (calle24-light-appearance)))))
+
+(defun calle24-install ()
+  "Install Calle 24 tool bar images.
+
+This command will install the Calle 24 tool bar images into the
+directory `calle24-image-directory' via the command line utility
+‘rsync’.
+
+In addition, this command will add `calle24-image-directory' to the
+`image-load-path'.
+
+Note that upon usage, it is recommended to restart Emacs to load the
+Calle 24 images."
+
+  (interactive)
+
+  (if (y-or-n-p "This command will install Calle 24. Do you wish to proceed? ")
+      (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
+             (calle24-pkg-dir (package-desc-dir calle24-pkg))
+             (src-dir (concat calle24-pkg-dir "/images/"))
+             (dest-dir (if (string= (substring calle24-image-directory -1) "/")
+                           calle24-image-directory
+                         (concat calle24-image-directory "/")))
+             (cmdList ()))
+
+        (make-directory dest-dir t)
+        (calle24-configure-image-load-path)
+        (push "rsync" cmdList)
+        (push "-avh" cmdList)
+        (push src-dir cmdList)
+        (push dest-dir cmdList)
+        (message (shell-command-to-string (string-join (reverse cmdList) " "))))
+    (message "Ok.")))
+
+(defun calle24-configure-image-load-path ()
+  "Add `calle24-image-directory' to `image-load-path' and persist.
+
+This function will configure `image-load-path' to contain the install
+directory for Calle 24 images `calle24-image-directory'."
+  (let ((iload-path image-load-path)
+        (image-directory calle24-image-directory))
+    (if (not (seq-contains-p image-load-path image-directory))
+        (progn
+          (push image-directory iload-path)
+          (customize-save-variable 'image-load-path iload-path)))))
+
+(defun calle24-uninstall ()
+  "Uninstall Calle 24 from this system.
+
+Run this command before deleting the package ‘calle24’.
+
+This will delete the contents of `calle24-image-directory' and remove
+`calle24-image-directory' from `image-load-path'."
+  (interactive)
+
+  (if (y-or-n-p "This command will uninstall Calle 24 from your Emacs setup. Do you wish to proceed? ")
+      (let ((calle24-directory (concat user-emacs-directory "calle24"))
+            (iload-path (seq-remove
+                         (lambda (x) (string= x calle24-image-directory))
+                         image-load-path)))
+        (delete-directory calle24-directory t t)
+
+        (if (seq-contains-p image-load-path calle24-image-directory)
+            (customize-save-variable 'image-load-path iload-path)))
+
+    (message "Ok.")))
 
 (provide 'calle24)
 ;;; calle24.el ends here
