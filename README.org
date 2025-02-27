@@ -42,7 +42,7 @@ The Calle 24 package (~calle24~) is distributed on MELPA (TBD). Use your package
 Upon installation of ~calle24~ from MELPA, run the following command:
 
 #+begin_src elisp
-  M-x calle24-install-tool-bar-images
+  M-x calle24-install
 #+end_src
 
 You should restart Emacs after running the above command to see the tool bar images replaced with their SF Symbols equivalent.
