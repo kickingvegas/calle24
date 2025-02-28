@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 0.1.2
+;; Version: 0.1.3-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -199,27 +199,36 @@ to build the image expression."
 (defun calle24-dark-appearance ()
   "Configure tool bar images for OS dark mode appearance."
   (interactive)
-  ;;(tool-bar-setup)
-  (calle24-update-tool-bar-appearance t)
-  (calle24-update-tool-bar-appearance t info-tool-bar-map)
-  (calle24-update-tool-bar-appearance t isearch-tool-bar-map)
-  (calle24-update-tool-bar-appearance t help-mode-tool-bar-map)
-  ;;(calle24-update-tool-bar-appearance t eww-tool-bar-map)
-
-  (tool-bar--flush-cache))
+  (calle24--update-toolbars t))
 
 ;;;###autoload (autoload 'calle24-light-appearance "calle24" nil t)
 (defun calle24-light-appearance ()
   "Configure tool bar images for OS light mode appearance."
   (interactive)
-  ;;(tool-bar-setup)
-  (calle24-update-tool-bar-appearance)
-  (calle24-update-tool-bar-appearance nil info-tool-bar-map)
-  (calle24-update-tool-bar-appearance nil isearch-tool-bar-map)
-  (calle24-update-tool-bar-appearance nil help-mode-tool-bar-map)
-  ;;(calle24-update-tool-bar-appearance nil eww-tool-bar-map)
+  (calle24--update-toolbars nil))
 
-  (tool-bar--flush-cache))
+(defun calle24--update-toolbars (dark)
+  "Update images for all Emacs tool bar instances for DARK appearance.
+
+If DARK is non-nil, then all tool bars are updated for the macOS dark
+appearance, otherwise light."
+  (let* ((tblist ()))
+    ;; !!!: Update tool bars for modes not instantiated.
+    (calle24-update-tool-bar-appearance dark info-tool-bar-map)
+    (calle24-update-tool-bar-appearance dark isearch-tool-bar-map)
+    (calle24-update-tool-bar-appearance dark help-mode-tool-bar-map)
+    ;; (calle24-update-tool-bar-appearance nil eww-tool-bar-map)
+
+    ;; !!!: Update tool bars already instantiated.
+    ;; tblist is used to carry tool bars that have already been updated.
+    (mapc (lambda (x)
+            (with-current-buffer x
+              (if (not (seq-contains-p tblist tool-bar-map))
+                  (progn
+                    (calle24-update-tool-bar-appearance dark)
+                    (push tool-bar-map tblist)
+                    (tool-bar--flush-cache)))))
+          (buffer-list))))
 
 (defun calle24-grep-tool-bar-config ()
   "Configure Calle 24 opinionated tool bar for grep/compilation mode."

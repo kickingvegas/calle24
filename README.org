@@ -35,9 +35,13 @@ By convention, Emacs tool bar code references an image file by doing a path-list
 
 *Calle 24* takes advantage of this by recreating the same directory of image file names packaged by Emacs but instead using SF Symbol data as the image file content. The path to this directory is then inserted at the start of the ~image-load-path~ variable. When the tool bar code looks for an image, it will pick up the directory containing SF symbols data first and render it accordingly.
 
+* Requirements
+
+*Calle 24* requires Emacs 29.1+ running on macOS.
+
 * Installation
 
-The Calle 24 package (~calle24~) is distributed on MELPA (TBD). Use your package manager of choice to install it.
+The *Calle 24* package (~calle24~) is distributed on MELPA (TBD). Use your package manager of choice to install it.
 
 Upon installation of ~calle24~ from MELPA, run the following command:
 
