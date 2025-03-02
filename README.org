@@ -56,9 +56,8 @@ You should restart Emacs after running the above command to see the tool bar ima
 Add the following code to your Emacs initialization to load appearance-specific images.
 
 #+begin_src elisp :lexical no
-  (when (eq window-system 'ns)
-    (calle24-refresh-appearance)
-    (add-hook 'compilation-mode-hook #'calle24-refresh-appearance))
+  (calle24-refresh-appearance)
+  (add-hook 'compilation-mode-hook #'calle24-refresh-appearance)
 #+end_src
 
 ** Uninstall

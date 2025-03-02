@@ -44,9 +44,8 @@
 ;; Add the following code to your Emacs initialization to load
 ;; appearance-specific images.
 
-;; (when (eq window-system 'ns)
-;;   (calle24-refresh-appearance)
-;;   (add-hook 'compilation-mode-hook #'calle24-refresh-appearance))
+;; (calle24-refresh-appearance)
+;; (add-hook 'compilation-mode-hook #'calle24-refresh-appearance)
 
 ;; UNINSTALL
 
