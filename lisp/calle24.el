@@ -96,8 +96,7 @@ appearance."
                    (item-db (if (eq item-type 'menu-item) (nthcdr 4 item) nil))
                    (item-image (if (eq item-type 'menu-item) (map-elt item-db :image) nil)))
 
-              (when item-image
-                  ;; (setf (map-elt (nthcdr 4 item) :image) (tool-bar--image-expression "cut"))
+              (if item-image
                   (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark)))))
           toolbar-items)))
 
@@ -251,6 +250,17 @@ appearance, otherwise light."
      :help "Restart grep")
     map))
 
+(defun calle24-get-appearance ()
+  "Get current OS appearance."
+  (cond
+   ((eq (window-system) 'ns)
+    (calle24-get-macos-appearance))
+
+   ((eq (window-system) 'pgtk)
+    (calle24-get-pgtk-appearance))
+
+   (t "light")))
+
 (defun calle24-get-macos-appearance ()
   "Get current macOS appearance.
 This function is intended to run only on macOS systems with swift
@@ -267,11 +277,23 @@ default:
 }")))
     (car results)))
 
+(defun calle24-get-pgtk-appearance ()
+  "Get current pgtk appearance."
+  (let ((result (process-lines
+                  "gsettings"
+                  "get"
+                  "org.gnome.desktop.interface"
+                  "color-scheme")))
+
+    (if (string= (car result) "'prefer-dark'")
+        "dark"
+      "light")))
+
 ;;;###autoload (autoload 'calle24-refresh-appearance "calle24" nil t)
 (defun calle24-refresh-appearance ()
   "Refresh OS appearance-dependent images from Calle 24."
   (interactive)
-  (let ((appearance (calle24-get-macos-appearance)))
+  (let ((appearance (calle24-get-appearance)))
     (cond
      ((string= appearance "dark") (calle24-dark-appearance))
      ((string= appearance "light") (calle24-light-appearance))
