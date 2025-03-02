@@ -31,8 +31,8 @@
 
 ;; INSTALLATION
 
-;; Upon installation of the package `calle24' from MELPA, run the following
-;; command:
+;; Upon installation or subsequent updates of the package `calle24' from MELPA,
+;; run the following command:
 
 ;; M-x `calle24-install'
 
@@ -96,7 +96,7 @@ appearance."
                    (item-db (if (eq item-type 'menu-item) (nthcdr 4 item) nil))
                    (item-image (if (eq item-type 'menu-item) (map-elt item-db :image) nil)))
 
-              (if item-image
+              (when item-image
                   ;; (setf (map-elt (nthcdr 4 item) :image) (tool-bar--image-expression "cut"))
                   (setf (map-elt (nthcdr 4 item) :image) (calle24--image-expression identifier dark)))))
           toolbar-items)))
