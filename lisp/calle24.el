@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.2
+;; Version: 1.0.3-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -44,9 +44,8 @@
 ;; Add the following code to your Emacs initialization to load
 ;; appearance-specific images.
 
-;; (when (eq window-system 'ns)
-;;   (calle24-refresh-appearance)
-;;   (add-hook 'compilation-mode-hook #'calle24-refresh-appearance))
+;; (calle24-refresh-appearance)
+;; (add-hook 'compilation-mode-hook #'calle24-refresh-appearance)
 
 ;; UNINSTALL
 
