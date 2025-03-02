@@ -43,7 +43,7 @@ By convention, Emacs tool bar code references an image file by doing a path-list
 
 The *Calle 24* package (~calle24~) is distributed on MELPA (TBD). Use your package manager of choice to install it.
 
-Upon installation of ~calle24~ from MELPA, run the following command:
+Upon installation or subsequent updates of ~calle24~ from MELPA, run the following command:
 
 #+begin_src elisp
   M-x calle24-install
