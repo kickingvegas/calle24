@@ -1,3 +1,5 @@
+[[https://melpa.org/#/calle24][file:https://melpa.org/packages/calle24-badge.svg]] [[https://stable.melpa.org/#/calle24][file:https://stable.melpa.org/packages/calle24-badge.svg]]
+
 * Calle 24 - Proxy Emacs image assets with SF Symbols
 
 Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] in place of the default toolbar images packaged with Emacs (NS variant). 
@@ -41,7 +43,7 @@ By convention, Emacs tool bar code references an image file by doing a path-list
 
 * Installation
 
-The *Calle 24* package (~calle24~) is distributed on MELPA (TBD). Use your package manager of choice to install it.
+The *Calle 24* package (~calle24~) is distributed on [[https://melpa.org/#/calle24][MELPA]]. Use your package manager of choice to install it.
 
 Upon installation or subsequent updates of ~calle24~ from MELPA, run the following command:
 
