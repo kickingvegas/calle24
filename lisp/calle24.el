@@ -64,6 +64,7 @@
 (require 'seq)
 (require 'package)
 (require 'compile)
+(require 'doc-view)
 
 (defvar user-emacs-directory) ; declared only to pass package lint
 
@@ -140,7 +141,12 @@ appearance."
     (isearch-repeat-forward . "right-arrow")
     (kill-buffer . "close")
     (kill-compilation . "cancel")
+    (find-file . "new")
+    (menu-find-file-existing . "open")
     (new-file . "new")
+    (New\ Search . "search")
+    (Search\ Backward . "left-arrow")
+    (Search\ Forward . "right-arrow")
     (next-error-no-select . "right-arrow")
     (open-file . "open")
     (paste . "paste")
@@ -157,7 +163,9 @@ appearance."
     (\ Erase\ Customizations\  . "delete")
     (\ Toggle\ hiding\ all\ values\  . "hide")
     (\ Help\ for\ Customize\  . "help")
-    (\ Exit\  . "exit"))
+    (\ Exit\  . "exit")
+    (Previous\ page . "last-page")
+    (Next\ page . "next-page"))
   "Alist map of keys used by certain toolbar maps built-in with Emacs.
 
 The following toolbars are supported:
@@ -166,7 +174,8 @@ The following toolbars are supported:
 - `info-tool-bar-map'
 - `isearch-tool-bar-map'
 - `grep-mode-tool-bar-map'
-- `eww-tool-bar-map'")
+- `eww-tool-bar-map'
+- `doc-view-tool-bar-map'")
 
 (defun calle24--image-expression (key &optional dark appearance-map)
   "DARK appearance image expression using KEY in APPEARANCE-MAP.
@@ -215,6 +224,7 @@ appearance, otherwise light."
     (calle24-update-tool-bar-appearance dark info-tool-bar-map)
     (calle24-update-tool-bar-appearance dark isearch-tool-bar-map)
     (calle24-update-tool-bar-appearance dark help-mode-tool-bar-map)
+    (calle24-update-tool-bar-appearance dark doc-view-tool-bar-map)
     ;; (calle24-update-tool-bar-appearance nil eww-tool-bar-map)
 
     ;; !!!: Update tool bars already instantiated.
