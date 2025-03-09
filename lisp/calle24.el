@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.4
+;; Version: 1.0.5-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; Calle 24 provides toolbar support for SF symbols. It achieves this by
+;; Calle 24 provides toolbar support for SF Symbols. It achieves this by
 ;; substituting Emacs image assets with SF Symbols by proxy.
 
 ;; This package is only intended to be used by Emacs (NS variant) running on
