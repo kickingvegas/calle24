@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.5
+;; Version: 1.0.6-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -308,6 +308,7 @@ default:
      ((string= appearance "light") (calle24-light-appearance))
      (t (calle24-light-appearance)))))
 
+;;;###autoload (autoload 'calle24-install "calle24" nil t)
 (defun calle24-install ()
   "Install Calle 24 tool bar images.
 
@@ -353,6 +354,7 @@ directory for Calle 24 images `calle24-image-directory'."
           (push image-directory iload-path)
           (customize-save-variable 'image-load-path iload-path)))))
 
+;;;###autoload (autoload 'calle24-uninstall "calle24" nil t)
 (defun calle24-uninstall ()
   "Uninstall Calle 24 from this system.
 
