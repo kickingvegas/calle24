@@ -53,6 +53,8 @@ Upon installation or subsequent updates of ~calle24~ from MELPA, run the followi
 
 You should restart Emacs after running the above command to see the tool bar images replaced with their SF Symbols equivalent.
 
+
+
 ** Configuration
 
 Add the following code to your Emacs initialization to load appearance-specific images.
@@ -77,6 +79,10 @@ This command will do the following:
 
 1. Remove the directory ~calle24-image-directory~ in ~user-emacs-directory~.
 2. Remove ~calle24-image-directory~ from ~image-load-path~.
+
+** Troubleshooting
+
+The ~calle24-install~ command uses your local install of ~rsync~ to install the image files. There have been reports of Homebrew builds not successfully running ~calle24-install~ using the default macOS install of ~rsync~. A workaround is to install the Homebrew version of ~rsync~ which should navigate the required permissions to successfully install.
 
 * Using Calle 24
 
