@@ -408,13 +408,16 @@ resize all xpm files in it."
          (files (directory-files-recursively calle24-image-directory "xpm"))
          (files (mapcar #'expand-file-name files)))
 
-    (mapc (lambda (x)
-            (let ((current-size
-                   (car (process-lines "identify" "-format" "%wx%h" x))))
-              (if (not (string= current-size size))
-                  (process-lines imagemagick-cmd x "-resize" size x))))
-          files)))
-
+    (if (not (eq system-type 'darwin))
+        (mapc (lambda (x)
+                (let ((current-size
+                       (car (process-lines "identify" "-format" "%wx%h" x))))
+                  (if (not (string= current-size size))
+                      (progn
+                        (message "Resizing %s to %s" x size)
+                        (process-lines imagemagick-cmd x "-resize" size x)))))
+              files)
+      (message "A rolling stone gathers no moss."))))
 
 (provide 'calle24)
 ;;; calle24.el ends here
