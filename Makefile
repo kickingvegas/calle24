@@ -60,7 +60,7 @@ uninstall-getappearance: $(BIN_DIR)/$(GETAPPEARANCE_EXEC).swift
 install: $(INSTALL_DIR)/images
 
 $(INSTALL_DIR)/images: $(INSTALL_DIR)
-	rsync -avh images/ $@/
+	rsync -avh --size-only images/ "$@/"
 
 .PHONY: image-load-path
 image-load-path:
