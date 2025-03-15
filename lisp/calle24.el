@@ -336,16 +336,28 @@ Do you wish to proceed? " dest-dir))
 
     (if (y-or-n-p prompt)
         (progn
-          (make-directory dest-dir t)
-          (calle24-configure-image-load-path)
-          (push "rsync" cmdList)
-          (push "-avh" cmdList)
-          (push "--size-only" cmdList)
-          (push src-dir cmdList)
-          (push dest-dir cmdList)
-          (message
-           (shell-command-to-string
-            (string-join (reverse cmdList) " "))))
+          (cond
+           ((executable-find "rsync")
+            (make-directory dest-dir t)
+            (calle24-configure-image-load-path)
+            (push "rsync" cmdList)
+            (push "-avh" cmdList)
+            (push "--size-only" cmdList)
+            (push src-dir cmdList)
+            (push dest-dir cmdList)
+            (message
+             (shell-command-to-string
+              (string-join (reverse cmdList) " "))))
+
+           (t
+            ;; Note that this will replace dest-dir
+            (let* ((src-dir (string-remove-suffix "/" src-dir))
+                   (dest-dir-stripped (string-remove-suffix "/" dest-dir)))
+              (if (file-exists-p dest-dir)
+                  (delete-directory dest-dir t)
+                (make-directory dest-dir t))
+              (calle24-configure-image-load-path)
+              (copy-directory src-dir dest-dir-stripped)))))
       (message "Ok."))))
 
 (defun calle24-configure-image-load-path ()
