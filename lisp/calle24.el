@@ -324,23 +324,29 @@ Calle 24 images."
 
   (interactive)
 
-  (if (y-or-n-p "This command will install Calle 24. Do you wish to proceed? ")
-      (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
-             (calle24-pkg-dir (package-desc-dir calle24-pkg))
-             (src-dir (concat calle24-pkg-dir "/images/"))
-             (dest-dir (if (string= (substring calle24-image-directory -1) "/")
-                           calle24-image-directory
-                         (concat calle24-image-directory "/")))
-             (cmdList ()))
+  (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
+         (calle24-pkg-dir (package-desc-dir calle24-pkg))
+         (src-dir (concat calle24-pkg-dir "/images/"))
+         (dest-dir (if (string= (substring calle24-image-directory -1) "/")
+                       calle24-image-directory
+                     (concat calle24-image-directory "/")))
+         (prompt (format "This command will install Calle 24 in '%s'.
+Do you wish to proceed? " dest-dir))
+         (cmdList ()))
 
-        (make-directory dest-dir t)
-        (calle24-configure-image-load-path)
-        (push "rsync" cmdList)
-        (push "-avh" cmdList)
-        (push src-dir cmdList)
-        (push dest-dir cmdList)
-        (message (shell-command-to-string (string-join (reverse cmdList) " "))))
-    (message "Ok.")))
+    (if (y-or-n-p prompt)
+        (progn
+          (make-directory dest-dir t)
+          (calle24-configure-image-load-path)
+          (push "rsync" cmdList)
+          (push "-avh" cmdList)
+          (push "--size-only" cmdList)
+          (push src-dir cmdList)
+          (push dest-dir cmdList)
+          (message
+           (shell-command-to-string
+            (string-join (reverse cmdList) " "))))
+      (message "Ok."))))
 
 (defun calle24-configure-image-load-path ()
   "Add `calle24-image-directory' to `image-load-path' and persist.
@@ -364,17 +370,20 @@ This will delete the contents of `calle24-image-directory' and remove
 `calle24-image-directory' from `image-load-path'."
   (interactive)
 
-  (if (y-or-n-p "This command will uninstall Calle 24 from your Emacs setup. Do you wish to proceed? ")
-      (let ((calle24-directory (concat user-emacs-directory "calle24"))
-            (iload-path (seq-remove
-                         (lambda (x) (string= x calle24-image-directory))
-                         image-load-path)))
-        (delete-directory calle24-directory t t)
+  (let* ((calle24-directory (file-name-directory calle24-image-directory))
+         (iload-path (seq-remove
+                      (lambda (x) (string= x calle24-image-directory))
+                      image-load-path))
+         (prompt (format "This command will uninstall Calle 24 at '%s'
+Do you wish to proceed? " calle24-directory)))
 
-        (if (seq-contains-p image-load-path calle24-image-directory)
-            (customize-save-variable 'image-load-path iload-path)))
+    (if (y-or-n-p prompt)
+        (progn
+          (delete-directory calle24-directory t t)
+          (if (seq-contains-p image-load-path calle24-image-directory)
+              (customize-save-variable 'image-load-path iload-path)))
 
-    (message "Ok.")))
+      (message "Ok."))))
 
 (provide 'calle24)
 ;;; calle24.el ends here
