@@ -397,5 +397,24 @@ Do you wish to proceed? " calle24-directory)))
 
       (message "Ok."))))
 
+(defun calle24-resize-images ()
+  "Resize all images in `calle24-image-directory' to 32x32.
+
+This command will recursively descend `calle24-image-directory' to
+resize all xpm files in it."
+  (interactive)
+  (let* ((size  "32x32")
+         (imagemagick-cmd (if (executable-find "magick") "magick" "convert"))
+         (files (directory-files-recursively calle24-image-directory "xpm"))
+         (files (mapcar #'expand-file-name files)))
+
+    (mapc (lambda (x)
+            (let ((current-size
+                   (car (process-lines "identify" "-format" "%wx%h" x))))
+              (if (not (string= current-size size))
+                  (process-lines imagemagick-cmd x "-resize" size x))))
+          files)))
+
+
 (provide 'calle24)
 ;;; calle24.el ends here
