@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.7
+;; Version: 1.0.8-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -396,6 +396,28 @@ Do you wish to proceed? " calle24-directory)))
               (customize-save-variable 'image-load-path iload-path)))
 
       (message "Ok."))))
+
+(defun calle24-resize-images ()
+  "Resize all images in `calle24-image-directory' to 32x32.
+
+This command will recursively descend `calle24-image-directory' to
+resize all xpm files in it."
+  (interactive)
+  (let* ((size  "32x32")
+         (imagemagick-cmd (if (executable-find "magick") "magick" "convert"))
+         (files (directory-files-recursively calle24-image-directory "xpm"))
+         (files (mapcar #'expand-file-name files)))
+
+    (if (not (eq system-type 'darwin))
+        (mapc (lambda (x)
+                (let ((current-size
+                       (car (process-lines "identify" "-format" "%wx%h" x))))
+                  (if (not (string= current-size size))
+                      (progn
+                        (message "Resizing %s to %s" x size)
+                        (process-lines imagemagick-cmd x "-resize" size x)))))
+              files)
+      (message "A rolling stone gathers no moss."))))
 
 (provide 'calle24)
 ;;; calle24.el ends here
