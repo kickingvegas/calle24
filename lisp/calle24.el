@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.8
+;; Version: 1.0.9-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -224,7 +224,8 @@ appearance, otherwise light."
     (calle24-update-tool-bar-appearance dark info-tool-bar-map)
     (calle24-update-tool-bar-appearance dark isearch-tool-bar-map)
     (calle24-update-tool-bar-appearance dark help-mode-tool-bar-map)
-    (calle24-update-tool-bar-appearance dark doc-view-tool-bar-map)
+    (when (boundp 'doc-view-tool-bar-map) ;; doc-view-tool-bar-map unbound in Emacs 29
+      (calle24-update-tool-bar-appearance dark doc-view-tool-bar-map))
     ;; (calle24-update-tool-bar-appearance nil eww-tool-bar-map)
 
     ;; !!!: Update tool bars already instantiated.
