@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.0.9
+;; Version: 1.0.10-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -119,9 +119,9 @@ appearance."
     (Go\ to\ Node... . "jump-to")
     (Lookup\ a\ String... . "index")
     (Next . "next-node")
-    (Next \Topic  . "left-arrow")
+    (Next\ Topic  . "right-arrow")
     (Previous . "prev-node")
-    (Previous\ Topic  . "right-arrow")
+    (Previous\ Topic  . "left-arrow")
     (Reload . "refresh")
     (Search... . "search")
     (Top . "home")
