@@ -63,26 +63,31 @@
     (tool-bar-local-item
      "edebug/update-eval-list"
      #'edebug-update-eval-list #'edebug-update-eval-list map
+     :label "Add"
      :help "Add Symbol")
 
     (tool-bar-local-item
      "edebug/delete-eval-item"
      #'edebug-delete-eval-item #'edebug-delete-eval-item map
+     :label "Delete"
      :help "Delete Symbol")
 
     (tool-bar-local-item
      "edebug/eval-last-sexp"
      #'edebug-eval-last-sexp #'edebug-eval-last-sexp map
+     :label "Eval"
      :help "Eval Last")
 
     (tool-bar-local-item
      "edebug/eval-print-last-sexp"
      #'edebug-eval-print-last-sexp #'edebug-eval-print-last-sexp map
-     :help "Print Eval Last")
+     :label "Insert"
+     :help "Insert (Print) Eval Last")
 
     (tool-bar-local-item
      "edebug/where"
      #'edebug-where #'edebug-where map
+     :label "Resume"
      :help "Resume")
 
     map))
@@ -95,144 +100,168 @@
      "edebug/eval-defun"
      #'eval-defun #'eval-defun map
      :visible '(not (edebug-mode-p))
+     :label "Eval Defun"
      :help "Go (eval-defun)")
 
     (tool-bar-local-item
      "edebug/goto-here"
      #'edebug-goto-here #'edebug-goto-here map
      :visible '(edebug-mode-p)
+     :label "Here"
      :help "Here")
 
     (tool-bar-local-item
      "edebug/set-mode"
      #'edebug-set-initial-mode #'edebug-set-initial-mode map
      :visible '(not (edebug-mode-p))
+     :label "Mode"
      :help "Set Initial Mode")
 
     (tool-bar-local-item
      "edebug/next-mode"
      #'edebug-next-mode #'edebug-next-mode map
      :visible '(edebug-mode-p)
+     :label "Next"
      :help "Next Mode")
 
     (tool-bar-local-item
      "edebug/continue-mode"
      #'edebug-continue-mode #'edebug-continue-mode map
      :visible '(edebug-mode-p)
+     :label "Continue"
      :help "Continue Mode")
 
     (tool-bar-local-item
      "edebug/trace-mode"
      #'edebug-trace-mode #'edebug-trace-mode map
      :visible '(edebug-mode-p)
+     :label "Trace"
      :help "Trace Mode")
 
     (tool-bar-local-item
      "edebug/go-mode"
      #'edebug-go-mode #'edebug-go-mode map
      :visible '(edebug-mode-p)
+     :label "Go"
      :help "Go Mode")
 
     (tool-bar-local-item
      "edebug/step-mode"
      #'edebug-step-mode #'edebug-step-mode map
      :visible '(edebug-mode-p)
+     :label "Step"
      :help "Step Mode")
 
     (tool-bar-local-item
      "edebug/forward-sexp"
      #'edebug-forward-sexp #'edebug-forward-sexp map
      :visible '(edebug-mode-p)
+     :label "Over"
      :help "Forward sexp (Step Over)")
 
     (tool-bar-local-item
      "edebug/step-in"
      #'edebug-step-in #'edebug-step-in map
      :visible '(edebug-mode-p)
+     :label "In"
      :help "Step in sexp")
 
     (tool-bar-local-item
      "edebug/step-out"
      #'edebug-step-out #'edebug-step-out map
      :visible '(edebug-mode-p)
+     :label "Out"
      :help "Step out sexp")
 
     (tool-bar-local-item
      "edebug/eval-expression"
      #'edebug-eval-expression #'edebug-eval-expression map
      :visible '(edebug-mode-p)
+     :label "Eval"
      :help "Evaluate Expression")
 
     (tool-bar-local-item
      "edebug/previous-result"
      #'edebug-previous-result #'edebug-previous-result map
      :visible '(edebug-mode-p)
+     :label "Previous"
      :help "Previous Result")
 
     (tool-bar-local-item
      "edebug/view-outside"
      #'edebug-view-outside #'edebug-view-outside map
      :visible '(edebug-mode-p)
+     :label "Outside"
      :help "View Outside")
 
     (tool-bar-local-item
      "edebug/visit-eval-list"
      #'edebug-visit-eval-list #'edebug-visit-eval-list map
      :visible '(edebug-mode-p)
+     :label "Watchlist"
      :help "Watchlist")
 
     (tool-bar-local-item
      "edebug/set-breakpoint"
      #'edebug-set-breakpoint #'edebug-set-breakpoint map
      :visible '(edebug-mode-p)
+     :label "Break"
      :help "Set Breakpoint")
 
     (tool-bar-local-item
      "edebug/conditional-breakpoint"
      #'edebug-set-conditional-breakpoint #'edebug-set-conditional-breakpoint map
      :visible '(edebug-mode-p)
+     :label "Cond"
      :help "Set Conditional Breakpoint")
 
     (tool-bar-local-item
      "edebug/next-breakpoint"
      #'edebug-next-breakpoint #'edebug-next-breakpoint map
      :visible '(edebug-mode-p)
+     :label "Next"
      :help "Next Breakpoint")
 
     (tool-bar-local-item
      "edebug/unset-breakpoint"
      #'edebug-unset-breakpoint #'edebug-unset-breakpoint map
      :visible '(edebug-mode-p)
+     :label "Unset"
      :help "Unset Breakpoint")
 
     (tool-bar-local-item
      "edebug/unset-all-breakpoints"
      #'edebug-unset-breakpoints #'edebug-unset-breakpoints map
      :visible '(edebug-mode-p)
+     :label "Unset All"
      :help "Unset All Breakpoints")
 
     (tool-bar-local-item
      "edebug/stop"
      #'edebug-stop #'edebug-stop map
      :visible '(edebug-mode-p)
+     :label "Stop"
      :help "Stop")
 
     (tool-bar-local-item
      "edebug/top-level"
      #'top-level #'top-level map
      :visible '(edebug-mode-p)
+     :label "Quit"
      :help "Quit Edebug")
 
     (tool-bar-local-item
      "edebug/top-level-nonstop"
      #'edebug-top-level-nonstop #'edebug-top-level-nonstop map
      :visible '(edebug-mode-p)
+     :label "Nonstop"
      :help "Quit Edebug Nonstop")
 
     (tool-bar-local-item
      "help"
      #'edebug-help #'edebug-help map
      :visible '(edebug-mode-p)
+     :label "Help"
      :help "Help")
 
     (tool-bar-local-item-from-menu #'find-file "new" map nil
