@@ -2,12 +2,12 @@
 
 * Calle 24 - Proxy Emacs image assets with SF Symbols
 
-Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] in place of the default toolbar images packaged with Emacs (NS variant). 
+Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] in place of the default toolbar images packaged with GNU Emacs (NS and X11/GTK variants). 
 
 [[file:docs/images/calle24-sfsymbols.png]]
 
 ** Caveats
-- This work is intended for use only on Emacs for macOS. This package does not support other platforms.
+- This work is intended for use only on GNU Emacs for macOS. This package does not support other platforms.
 
 
 * Table of Contents                                                   :TOC_3:
@@ -16,10 +16,16 @@ Use [[https://developer.apple.com/sf-symbols/][SF Symbols]] in place of the defa
 - [[#features][Features]]
 - [[#known-issues][Known Issues]]
 - [[#how-does-this-work][How Does This Work?]]
+- [[#requirements][Requirements]]
 - [[#installation][Installation]]
   - [[#configuration][Configuration]]
+  - [[#resize-images][Resize Images]]
   - [[#uninstall][Uninstall]]
+  - [[#troubleshooting][Troubleshooting]]
 - [[#using-calle-24][Using Calle 24]]
+  - [[#edebug-support][Edebug Support]]
+    - [[#calle-24-edebug-installation][Calle 24 Edebug Installation]]
+  - [[#known-issues-1][Known Issues]]
 - [[#license][License]]
 - [[#sponsorship][Sponsorship]]
 - [[#why-the-name-calle-24][Why the name Calle 24?]]
@@ -53,8 +59,6 @@ Upon installation or subsequent updates of ~calle24~ from MELPA, run the followi
 
 You should restart Emacs after running the above command to see the tool bar images replaced with their SF Symbols equivalent.
 
-
-
 ** Configuration
 
 Add the following code to your Emacs initialization to load appearance-specific images.
@@ -64,18 +68,18 @@ Add the following code to your Emacs initialization to load appearance-specific 
   (add-hook 'compilation-mode-hook #'calle24-refresh-appearance)
 #+end_src
 
+** Resize Images 
+
+For users using a GTK configuration of Emacs, the icons should be resized for a better experience. Use the command ~calle24-resize-images~ to accomplish this.
+
 ** Uninstall
 
-In the event that you do not wish to use *Calle 24*, perform the following
-steps before deleting the ~calle24~ package.
+In the event that you do not wish to use *Calle 24*, perform the following steps before deleting the ~calle24~ package using ~package-delete~.
 
-In the event that you do not wish to use *Calle 24*, perform the following command:
+1. Run ~M-x calle24-uninstall~
+2. Run ~M-x package-delete calle24~
 
-#+begin_src elisp :lexical no
-  M-x calle24-uninstall
-#+end_src
-
-This command will do the following:
+The ~calle24-uninstall~ command does the following:
 
 1. Remove the directory ~calle24-image-directory~ in ~user-emacs-directory~.
 2. Remove ~calle24-image-directory~ from ~image-load-path~.
@@ -95,7 +99,54 @@ Explicit invocation of appearance can be done with the following commands:
 - ~calle24-light-appearance~
 - ~calle24-dark-appearance~
 
+** Edebug Support
+
+[[file:docs/images/calle24-edebug.png]]
+
+
+Calle 24 includes toolbar icon support for Edebug (info: [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html][(elisp) Edebug]]). Note this is prototype code. Please review the [[*Known Issues][known Issues]]
+section for more details. 
+
+*** Calle 24 Edebug Installation
+
+Add the following Elisp to your Emacs initialization file.
+
+#+BEGIN_SRC elisp :lexical no
+  (require 'calle24-edebug)
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (setq-local tool-bar-map (calle24-edebug-mode-tool-bar-map))
+              (let ((appearance (calle24-get-appearance)))
+                (cond
+                 ((string= appearance "dark")
+                  (calle24-update-tool-bar-appearance t))
+                 ((string= appearance "light")
+                  (calle24-update-tool-bar-appearance))
+                 (t (calle24-update-tool-bar-appearance))))))
+
+  (add-hook 'edebug-eval-mode-hook
+            (lambda ()
+              (setq-local tool-bar-map (calle24-edebug-eval-mode-tool-bar-map))
+              (let ((appearance (calle24-get-appearance)))
+                (cond
+                 ((string= appearance "dark")
+                  (calle24-update-tool-bar-appearance t))
+                 ((string= appearance "light")
+                  (calle24-update-tool-bar-appearance))
+                 (t (calle24-update-tool-bar-appearance))))))
+
+  (add-hook 'edebug-eval-mode-hook #'window-tool-bar-mode)
+#+END_SRC
+
+** Known Issues
+
+- There is an existing bug in the NS variant of GNU Emacs 30.1 where repeated rapid pressing of a toolbar button can force Emacs into a state where it is not responsive to GUI input. Bug reports can be found at [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=76749][#76749]], [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72496][#72496]].
+
+- Both NS and GTK variants can only show toolbar icons in a single row.
   
+- ~window-tool-bar-mode~ does not support appearance changes (dark, light mode).
+
+
 * License
 All SF Symbols images used by *Calle 24* are copyrighted by Apple, Inc.
 
