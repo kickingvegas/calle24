@@ -324,13 +324,9 @@ Note that upon usage, it is recommended to restart Emacs to load the
 Calle 24 images."
 
   (interactive)
-
-  (let* ((calle24-pkg (car (map-elt package-alist 'calle24)))
-         (calle24-pkg-dir (package-desc-dir calle24-pkg))
-         (src-dir (concat calle24-pkg-dir "/images/"))
-         (dest-dir (if (string= (substring calle24-image-directory -1) "/")
-                       calle24-image-directory
-                     (concat calle24-image-directory "/")))
+  (let* ((install-dirs (calle24--install-dirs))
+         (src-dir (seq-first install-dirs))
+         (dest-dir (seq-elt install-dirs 1))
          (prompt (format "This command will install Calle 24 in '%s'.
 Do you wish to proceed? " dest-dir))
          (cmdList ()))
@@ -346,11 +342,11 @@ Do you wish to proceed? " dest-dir))
             (push "--size-only" cmdList)
             (push src-dir cmdList)
             (push dest-dir cmdList)
-            (message
-             (shell-command-to-string
-              (string-join (reverse cmdList) " "))))
+            (let ((cmd (string-join (reverse cmdList) " ")))
+              (message cmd)
+              (message (shell-command-to-string cmd))))
 
-           (t
+           (t ; direct copy if rsync is not available.
             ;; Note that this will replace dest-dir
             (let* ((src-dir (string-remove-suffix "/" src-dir))
                    (dest-dir-stripped (string-remove-suffix "/" dest-dir)))
@@ -360,6 +356,38 @@ Do you wish to proceed? " dest-dir))
               (calle24-configure-image-load-path)
               (copy-directory src-dir dest-dir-stripped)))))
       (message "Ok."))))
+
+(defun calle24--install-dirs()
+  "Determine src and dest directories for Calle 24.
+
+Determine where the src and dest directories are for Calle 24 depending
+on whether it was installed via `package-install' or otherwise. If
+otherwise, the result of `symbol-file' on `calle24' is used to determine
+the location of source of images. Regardless of where the src directory
+is, the dest directory is determined using `calle24-image-directory'."
+  (let ((result ())
+        (src-dir "")
+        (calle24-pkg-data (map-elt package-alist 'calle24)))
+
+    (if calle24-pkg-data
+        (let* ((calle24-pkg (car calle24-pkg-data))
+               (calle24-pkg-dir (package-desc-dir calle24-pkg)))
+          (setq src-dir (file-name-concat calle24-pkg-dir "images/")))
+
+      (setq src-dir (file-truename
+                     (file-name-concat
+                      (file-name-directory (symbol-file 'calle24))
+                      ".." "images/")))) ; presumes loading direct from repo
+
+    ;; dest-dir
+    (push (if (string= (substring calle24-image-directory -1) "/")
+              calle24-image-directory
+            (concat calle24-image-directory "/"))
+          result)
+
+    ;; src-dir
+    (push src-dir result) ; implicit return of push as the result
+    ))
 
 (defun calle24-configure-image-load-path ()
   "Add `calle24-image-directory' to `image-load-path' and persist.
