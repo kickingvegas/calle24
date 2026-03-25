@@ -130,6 +130,7 @@ appearance."
     (copy . "copy")
     (cut . "cut")
     (dired . "diropen")
+    (dired-from-menubar . "diropen")
     (isearch-cancel . "close")
     (isearch-delete-char . "undo")
     (isearch-describe-mode . "help")
