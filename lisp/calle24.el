@@ -5,7 +5,7 @@
 ;; Author: Charles Choi <kickingvegas@gmail.com>
 ;; URL: https://github.com/kickingvegas/calle24
 ;; Keywords: tools
-;; Version: 1.1.2
+;; Version: 1.1.3-rc.1
 ;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -130,6 +130,7 @@ appearance."
     (copy . "copy")
     (cut . "cut")
     (dired . "diropen")
+    (dired-from-menubar . "diropen")
     (isearch-cancel . "close")
     (isearch-delete-char . "undo")
     (isearch-describe-mode . "help")
@@ -149,6 +150,7 @@ appearance."
     (Search\ Forward . "right-arrow")
     (next-error-no-select . "right-arrow")
     (open-file . "open")
+    (open-directory . "diropen")
     (paste . "paste")
     (previous-error-no-select . "left-arrow")
     (quit . "close")

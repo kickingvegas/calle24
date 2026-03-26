@@ -271,8 +271,14 @@
     (tool-bar-local-item-from-menu #'menu-find-file-existing "open" map nil
 			           :label "Open"
                                    :visible '(not (edebug-mode-p)))
-    (tool-bar-local-item-from-menu #'dired "diropen" map nil
-                                   :visible '(not (edebug-mode-p)))
+
+    (if (lookup-key global-map [menu-bar file dired])
+        (tool-bar-local-item-from-menu #'dired "diropen" map nil
+                                       :visible '(not (edebug-mode-p))))
+
+    (if (lookup-key global-map [menu-bar file open-directory])
+        (tool-bar-local-item-from-menu #'dired-from-menubar "diropen" map nil
+                                       :visible '(not (edebug-mode-p))))
 
     (if (or (eq window-system 'x)
             (eq window-system 'pgtk))
