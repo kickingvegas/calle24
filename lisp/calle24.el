@@ -150,6 +150,7 @@ appearance."
     (Search\ Forward . "right-arrow")
     (next-error-no-select . "right-arrow")
     (open-file . "open")
+    (open-directory . "diropen")
     (paste . "paste")
     (previous-error-no-select . "left-arrow")
     (quit . "close")
